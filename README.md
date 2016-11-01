@@ -3,7 +3,8 @@
 [![Build Status][ci-image]][ci-url]
 [![Coverage Status][coverage-image]][coverage-url]
 [![NPM version][npm-image]][npm-url]
-[![Dependency Status][dependencies-image]][dependencies-url]
+[![Dependencies Status][dependencies-image]][dependencies-url]
+[![DevDependencies Status][devdependencies-image]][devdependencies-url]
 
 Tiny wrapper that ensures that lambda's callback is always called. In other words, from your handler you can return value, promise, throw exception, and this library will wrap your code into a promise while calling appropriate lambda-required callback. If you’d like, you can call callback by yourself, `lambda-handler-as-promised` will still behave in the same way.
 
@@ -93,6 +94,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [coverage-image]: https://coveralls.io/repos/github/AntonBazhal/lambda-handler-as-promised/badge.svg?branch=master
 [coverage-url]: https://coveralls.io/github/AntonBazhal/lambda-handler-as-promised?branch=master
 [dependencies-url]: https://david-dm.org/antonbazhal/lambda-handler-as-promised
-[dependencies-image]: https://img.shields.io/david/AntonBazhal/lambda-handler-as-promised.svg
+[dependencies-image]: https://david-dm.org/antonbazhal/lambda-handler-as-promised/status.svg
+[devdependencies-url]: https://david-dm.org/antonbazhal/lambda-handler-as-promised?type=dev
+[devdependencies-image]: https://david-dm.org/antonbazhal/lambda-handler-as-promised/dev-status.svg
 [npm-url]: https://www.npmjs.org/package/lambda-handler-as-promised
 [npm-image]: https://img.shields.io/npm/v/lambda-handler-as-promised.svg
