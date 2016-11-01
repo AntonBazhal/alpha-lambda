@@ -1,7 +1,7 @@
 {
   "name": "lambda-handler-as-promised",
-  "version": "1.0.0",
-  "description": "Tiny wrapper that ensures that lambda's callback is always called",
+  "version": "1.0.1",
+  "description": "Tiny wrapper that ensures that AWS Lambda function's callback is always called",
   "repository": {
     "type": "git",
     "url": "https://github.com/AntonBazhal/lambda-handler-as-promised.git"

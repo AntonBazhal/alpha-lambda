@@ -6,7 +6,7 @@
 [![Dependencies Status][dependencies-image]][dependencies-url]
 [![DevDependencies Status][devdependencies-image]][devdependencies-url]
 
-Tiny wrapper that ensures that lambda's callback is always called. In other words, from your handler you can return value, promise, throw exception, and this library will wrap your code into a promise while calling appropriate lambda-required callback. If you’d like, you can call callback by yourself, `lambda-handler-as-promised` will still behave in the same way.
+Tiny wrapper that ensures that [AWS Lambda][aws-lambda-url] function's callback is always called. In other words, from your handler you can return value, promise, throw exception, and this library will wrap your code into a promise while calling appropriate lambda-required callback. If you’d like, you can call callback by yourself, `lambda-handler-as-promised` will still behave in the same way.
 
 ## Installation
 
@@ -89,6 +89,7 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+[aws-lambda-url]: https://aws.amazon.com/lambda/details/
 [ci-image]: https://circleci.com/gh/AntonBazhal/lambda-handler-as-promised.svg?style=shield&circle-token=fc9c3e6f415d2d338800c8a08d6155708ad260ce
 [ci-url]: https://circleci.com/gh/AntonBazhal/lambda-handler-as-promised
 [coverage-image]: https://coveralls.io/repos/github/AntonBazhal/lambda-handler-as-promised/badge.svg?branch=master
