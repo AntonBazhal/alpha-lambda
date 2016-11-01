@@ -1,0 +1,16 @@
+# -*- mode: ini-generic -*-
+
+root = true
+
+[*]
+indent_style = tab
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[package.json]
+indent_style = space
+indent_size = 2
+
+[*.yml]
+indent_style = space
+indent_size = 2
