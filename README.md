@@ -77,6 +77,48 @@ const handler = lambdaHandler(function(event, context, callback) {
 
 > Note: handler, created by `lambda-handler-as-promised`, returns Promise, so you can use it, for example, to simplify your testing.
 
+## Context Extensions
+
+`lambda-handler-as-promised` adds several useful extensions to the [context][aws-context-url] object.
+
+### context.log
+
+`context.log` is a [bunyan][bunyan-url] instance initialized with such properties:
+- **name**: name of the [AWS Lambda][aws-lambda-url] function
+- **level**: logging level taken from `LOG_LEVEL` environment variable; `info` by default (check [bunyan documentation][bunyan-url] for more information)
+- **awsRequestId**: [AWS request ID][aws-context-url] associated with the request
+- **functionVersion**: the [AWS Lambda][aws-lambda-url] function version that is executing
+- **serializers**: `bunyan.stdSerializers.err` for `err` / `error` object, and custom serializer for `context` object (to prevent `log` and `child` properties from being logged)
+
+```js
+const lambdaHandler = require('lambda-handler-as-promised');
+
+const handler = lambdaHandler(function(event, context) {
+	context.log.info('Lambda function was invoked!');
+	return true;
+});
+```
+
+### context.child
+
+`context.child` method provides a way to create child logger with additional bound fields to be included into log records. Please note, that original context is cloned, so it is not mutated. This method is based on [bunyan's log.child method][bunyan-log-child-url].
+
+```js
+const lambdaHandler = require('lambda-handler-as-promised');
+
+function doSomething(context) {
+	context = context.child({ newField: 'new' }); // newField will be added to all log records
+	context.log.info('This is child context with newField');
+}
+
+const handler = lambdaHandler(function(event, context) {
+	context.log.info('This is base context');
+	doSomething();
+	context.log.info('This is base context again');
+	return true;
+});
+```
+
 ## License
 
 The MIT License (MIT)
@@ -89,7 +131,10 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+[aws-context-url]: http://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-context.html
 [aws-lambda-url]: https://aws.amazon.com/lambda/details/
+[bunyan-log-child-url]: https://www.npmjs.com/package/bunyan#logchild
+[bunyan-url]: https://www.npmjs.com/package/bunyan
 [ci-image]: https://circleci.com/gh/AntonBazhal/lambda-handler-as-promised.svg?style=shield&circle-token=fc9c3e6f415d2d338800c8a08d6155708ad260ce
 [ci-url]: https://circleci.com/gh/AntonBazhal/lambda-handler-as-promised
 [coverage-image]: https://coveralls.io/repos/github/AntonBazhal/lambda-handler-as-promised/badge.svg?branch=master
