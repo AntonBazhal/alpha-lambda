@@ -10,7 +10,8 @@ module.exports = function(handler) {
 	return function(event, context, callback) {
 		const newContext = loggerExtension(context);
 
-		return new Promise((resolve, reject) => {
+		return new Promise(
+			(resolve, reject) => {
 				if (handler.length < 3) {
 					resolve(handler(event, newContext));
 				} else {
@@ -25,5 +26,5 @@ module.exports = function(handler) {
 			})
 			.then(result => callback(null, result))
 			.catch(err => callback(err));
-	}
+	};
 };
