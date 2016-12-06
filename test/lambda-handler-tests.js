@@ -1,8 +1,8 @@
 'use strict';
 
-const bunyan = require('bunyan'),
-	chai = require('chai'),
-	chaiAsPromised = require('chai-as-promised');
+const bunyan = require('bunyan');
+const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
 
 const lambdaHandler = require('../.');
 
@@ -104,11 +104,11 @@ describe('lambda-handler-as-promised', function() {
 			const testResult2 = false;
 			const fixture = lambdaHandler((event, context, callback) => {
 				callback(null, testResult1);
-				return testResult2
+				return testResult2;
 			});
 
 			return fixture({}, testContext, (err, result) => {
-				expect(err).to.not.exist
+				expect(err).to.not.exist;
 				expect(result).to.be.equal(testResult1);
 			});
 		});

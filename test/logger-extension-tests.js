@@ -1,11 +1,11 @@
 'use strict';
 
-const _ = require('lodash'),
-	bunyan = require('bunyan'),
-	expect = require('chai').expect;
+const _ = require('lodash');
+const bunyan = require('bunyan');
+const expect = require('chai').expect;
 
-const loggerExtension = require('../lib/logger-extension'),
-	testContext = require('./utils/testContext');
+const loggerExtension = require('../lib/logger-extension');
+const testContext = require('./utils/testContext');
 
 describe('logger-extension', function() {
 
