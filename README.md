@@ -88,7 +88,7 @@ const handler = lambdaHandler(function(event, context, callback) {
 - **level**: logging level taken from `LOG_LEVEL` environment variable; `info` by default (check [bunyan documentation][bunyan-url] for more information)
 - **awsRequestId**: [AWS request ID][aws-context-url] associated with the request
 - **functionVersion**: the [AWS Lambda][aws-lambda-url] function version that is executing
-- **serializers**: `bunyan.stdSerializers.err` for `err` / `error` object, and custom serializer for `context` object (to prevent `log` and `child` properties from being logged)
+- **serializers**: custom serializers for `err` / `error` object (based on `bunyan.stdSerializers.err`, but custom error fields, if present, are included as well), and `context` object (to prevent `log` and `child` properties from being logged)
 
 ```js
 const lambdaHandler = require('lambda-handler-as-promised');

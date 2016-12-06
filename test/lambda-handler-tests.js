@@ -119,9 +119,6 @@ describe('lambda-handler-as-promised', function() {
 			const fixture = lambdaHandler((event, context) => {
 				expect(context).to.have.property('log');
 				expect(context.log).to.be.an.instanceof(bunyan);
-				expect(context.log).to.have.deep.property('fields.name', testContext.functionName);
-				expect(context.log).to.have.deep.property('fields.awsRequestId', testContext.awsRequestId);
-				expect(context.log).to.have.deep.property('fields.functionVersion', testContext.functionVersion);
 			});
 
 			return fixture({}, testContext, err => {
@@ -137,36 +134,6 @@ describe('lambda-handler-as-promised', function() {
 
 			return fixture({}, testContext, err => {
 				if (err) throw err;
-			});
-		});
-
-		describe('#child', function() {
-			it('should create child context', function() {
-				const testField = 'testField';
-				const fixture = lambdaHandler((event, context) => {
-					const newContext = context.child({testField});
-					expect(newContext).not.to.equal(context);
-					expect(newContext).to.have.deep.property('log.fields.testField', testField);
-				});
-
-				return fixture({}, testContext, err => {
-					if (err) throw err;
-				});
-			});
-		});
-
-		describe('#log', function() {
-			it('should omit "log" and "child" properties when context is logged', function() {
-				const fixture = lambdaHandler((event, context) => {
-					const newContext = context.child({ context });
-					expect(newContext).to.have.deep.property('log.fields.context');
-					expect(newContext).not.to.have.deep.property('log.fields.context.log');
-					expect(newContext).not.to.have.deep.property('log.fields.context.child');
-				});
-
-				return fixture({}, testContext, err => {
-					if (err) throw err;
-				});
 			});
 		});
 	});
