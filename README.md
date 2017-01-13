@@ -75,7 +75,98 @@ const handler = lambdaHandler(function(event, context, callback) {
 });
 ```
 
-> Note: handler, created by `lambda-handler-as-promised`, returns Promise, so you can use it, for example, to simplify your testing.
+> Note: handler, created by `lambda-handler-as-promised`, returns Promise.
+
+## Configuration
+
+`lambda-handler-as-promised` accepts an optional configuration object as a second parameter.
+
+### options.errorStack
+
+If set to `false`, error's stack trace is removed before returning error to a caller. Defaults to `true`.
+
+```js
+const lambdaHandler = require('lambda-handler-as-promised');
+
+const handler = lambdaHandler(
+	function(event) {
+		throw new Error('Winter is coming!');
+	},
+	{
+		errorStack: false
+	}
+);
+```
+
+### options.onBefore(event, context)
+
+Lifecycle hook method that is called before [`handler`](#usage).
+
+```js
+const lambdaHandler = require('lambda-handler-as-promised');
+
+const handler = lambdaHandler(
+	function(event) {
+		throw new Error('Winter is coming!');
+	},
+	{
+		onBefore: function(event, context) {
+			context.log.info({ event }, 'processing event');
+		}
+	}
+);
+```
+
+### options.onAfter(result, event, context)
+
+Lifecycle hook method that is called before result is returned to a caller. If no value is returned, original result will be passed back.
+
+> Note: if error is thrown inside this hook method, `options.onError` hook will be called when provided
+
+```js
+const lambdaHandler = require('lambda-handler-as-promised');
+
+const handler = lambdaHandler(
+	function(event) {
+		throw new Error('Winter is coming!');
+	},
+	{
+		onAfter: function(result, event, context) {
+			context.log.info({ result }, 'event processed');
+			return {
+				code: 200,
+				body: result
+			};
+		}
+	}
+);
+```
+
+### options.onError(error, event, context)
+
+Lifecycle hook method that is called when error is thrown during event processing. This method should be treated as a `catch` block. In other words, if you'd like error to be returned to a caller as an error, it must be rethrown. If error is not rethrown, `lambda-handler-as-promised` will pass back value returned from the hook or original error (when no value is returned) to a success callback.
+
+> Note: if error is not rethrown, `options.onAfter` hook will be called when provided
+
+```js
+const lambdaHandler = require('lambda-handler-as-promised');
+
+const handler = lambdaHandler(
+	function(event) {
+		throw new Error('Winter is coming!');
+	},
+	{
+		onError: function(error, event, context) {
+			if (/*is critical error*/) {
+				context.log.error({ result }, 'error occurred');
+				throw error;
+			}
+
+			return error;
+		}
+	}
+);
+```
 
 ## Context Extensions
 
