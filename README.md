@@ -88,7 +88,7 @@ const handler = lambdaHandler(function(event, context, callback) {
 
 ### options.errorStack
 
-If set to `false`, error's stack trace is removed before returning error to a caller. Defaults to `true`.
+If set to `false`, error's stack trace is removed before returning error to a caller. Defaults to `false`.
 
 ```js
 const lambdaHandler = require('lambda-handler-as-promised');
