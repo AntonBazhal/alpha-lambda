@@ -1,0 +1,9 @@
+.nyc_output/
+coverage/
+test/
+circle.yml
+.eslintrc
+.eslintignore
+.editorconfig
+*.log
+git.json
