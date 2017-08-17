@@ -6,7 +6,7 @@
 [![Dependencies Status][dependencies-image]][dependencies-url]
 [![DevDependencies Status][devdependencies-image]][devdependencies-url]
 
-Tiny wrapper that ensures that [AWS Lambda][aws-lambda-url] function's callback is always called. In other words, from your handler you can return value, promise, throw exception, and this library will wrap your code into a promise while calling appropriate lambda-required callback. If you’d like, you can call callback by yourself, `lambda-handler-as-promised` will still behave in the same way.
+Tiny wrapper that ensures that [AWS Lambda][aws-lambda-url] function's callback is always called. In other words, from your handler you can return value, promise, throw exception, and this library will wrap your code into a promise while calling appropriate lambda-required callback. Your handler is composed of middleware, similar to Express or Koa.
 
 ## Installation
 
@@ -39,180 +39,20 @@ With `lambda-handler-as-promised` you should not worry about top-level error han
 ```js
 const lambdaHandler = require('lambda-handler-as-promised');
 
-const handler = lambdaHandler(function(event) {
-	const result = doSomething(event);
-
-	if (/*something wrong*/) {
-		throw new Error('Winter is coming!');
-	}
-
-	return result;
-});
-```
-
-Or like this:
-
-```js
-const lambdaHandler = require('lambda-handler-as-promised');
-
-const handler = lambdaHandler(function(event) {
-	if (/*something wrong*/) {
-		throw new Error('Winter is coming!');
-	}
-
-	return doSomethingPromise(event);
-});
-```
-
-Or this (if you really want to):
-
-```js
-const lambdaHandler = require('lambda-handler-as-promised');
-
-const handler = lambdaHandler(function(event, context, callback) {
-	const result = doSomething(event);
-
-	if (result) {
-		callback(null, result);
-	} else {
-		callback(new Error('Winter is coming!'));
-	}
-});
-```
-
-> Note: handler, created by `lambda-handler-as-promised`, returns Promise.
-
-## Configuration
-
-`lambda-handler-as-promised` accepts an optional configuration object as a second parameter.
-
-### options.errorStack
-
-If set to `false`, error's stack trace is removed before returning error to a caller. Defaults to `false`.
-
-```js
-const lambdaHandler = require('lambda-handler-as-promised');
-
-const handler = lambdaHandler(
-	function(event) {
-		throw new Error('Winter is coming!');
-	},
-	{
-		errorStack: false
-	}
-);
-```
-
-### options.onBefore(event, context)
-
-Lifecycle hook method that is called before [`handler`](#usage).
-
-```js
-const lambdaHandler = require('lambda-handler-as-promised');
-
-const handler = lambdaHandler(
-	function(event) {
-		throw new Error('Winter is coming!');
-	},
-	{
-		onBefore: function(event, context) {
-			context.log.info({ event }, 'processing event');
-		}
-	}
-);
-```
-
-### options.onAfter(result, event, context)
-
-Lifecycle hook method that is called before result is returned to a caller. If no value is returned, original result will be passed back.
-
-> Note: if error is thrown inside this hook method, `options.onError` hook will be called when provided
-
-```js
-const lambdaHandler = require('lambda-handler-as-promised');
-
-const handler = lambdaHandler(
-	function(event) {
-		throw new Error('Winter is coming!');
-	},
-	{
-		onAfter: function(result, event, context) {
-			context.log.info({ result }, 'event processed');
-			return {
-				code: 200,
-				body: result
-			};
-		}
-	}
-);
-```
-
-### options.onError(error, event, context)
-
-Lifecycle hook method that is called when error is thrown during event processing. This method should be treated as a `catch` block. In other words, if you'd like error to be returned to a caller as an error, it must be rethrown. If error is not rethrown, `lambda-handler-as-promised` will pass back value returned from the hook or original error (when no value is returned) to a success callback.
-
-> Note: if error is not rethrown, `options.onAfter` hook will be called when provided
-
-```js
-const lambdaHandler = require('lambda-handler-as-promised');
-
-const handler = lambdaHandler(
-	function(event) {
-		throw new Error('Winter is coming!');
-	},
-	{
-		onError: function(error, event, context) {
-			if (/*is critical error*/) {
-				context.log.error({ result }, 'error occurred');
-				throw error;
-			}
-
-			return error;
-		}
-	}
-);
-```
-
-## Context Extensions
-
-`lambda-handler-as-promised` adds several useful extensions to the [context][aws-context-url] object.
-
-### context.log
-
-`context.log` is a [bunyan][bunyan-url] instance initialized with such properties:
-- **name**: name of the [AWS Lambda][aws-lambda-url] function
-- **level**: logging level taken from `LOG_LEVEL` environment variable; `info` by default (check [bunyan documentation][bunyan-url] for more information)
-- **awsRequestId**: [AWS request ID][aws-context-url] associated with the request
-- **functionVersion**: the [AWS Lambda][aws-lambda-url] function version that is executing
-- **serializers**: custom serializers for `err` / `error` object (based on `bunyan.stdSerializers.err`, but custom error fields, if present, are included as well), and `context` object (to prevent `log` and `child` properties from being logged)
-
-```js
-const lambdaHandler = require('lambda-handler-as-promised');
-
-const handler = lambdaHandler(function(event, context) {
-	context.log.info('Lambda function was invoked!');
-	return true;
-});
-```
-
-### context.child
-
-`context.child` method provides a way to create child logger with additional bound fields to be included into log records. Please note, that original context is cloned, so it is not mutated. This method is based on [bunyan's log.child method][bunyan-log-child-url].
-
-```js
-const lambdaHandler = require('lambda-handler-as-promised');
-
-function doSomething(context) {
-	context = context.child({ newField: 'new' }); // newField will be added to all log records
-	context.log.info('This is child context with newField');
-}
-
-const handler = lambdaHandler(function(event, context) {
-	context.log.info('This is base context');
-	doSomething();
-	context.log.info('This is base context again');
-	return true;
-});
+module.exports.handler = lambdaHandler()
+	.use(function(evenet, context, next) {
+		console.log('this runs first');
+		doSomethingSync();
+		return next(); // next is a function, you must call it to proceed to next middleware
+	})
+	.use(function(event, context) {
+		console.log('then this runs');
+		return doSomethingThatReturnsAPromise()
+			.then(() => {
+				// this would be the result of your lambda invoke
+				return true;
+			});
+	});
 ```
 
 ## License
