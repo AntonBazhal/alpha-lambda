@@ -20,7 +20,9 @@ describe('lambda-handler-as-promised', function() {
 	});
 
 	it('should have a use() method', function() {
-		expect(lambdaHandler().use).to.be.a('function');
+		expect(lambdaHandler())
+			.to.have.property('use')
+			.that.is.a('function');
 	});
 
 	describe('use()', function() {
@@ -28,7 +30,7 @@ describe('lambda-handler-as-promised', function() {
 			expect(() => lambdaHandler().use()).to.throw(Error, /^middleware is not a function$/);
 		});
 
-		it('should throw when midleware is not a non-function', function() {
+		it('should throw when midleware is not a function', function() {
 			expect(() => lambdaHandler().use(42)).to.throw(Error, /^middleware is not a function$/);
 		});
 
@@ -36,7 +38,7 @@ describe('lambda-handler-as-promised', function() {
 			const handler = lambdaHandler();
 			const result = handler.use(noop);
 
-			expect(result).to.equal(handler);
+			expect(result).to.deep.equal(handler);
 		});
 	});
 
@@ -161,19 +163,19 @@ describe('lambda-handler-as-promised', function() {
 		});
 
 		it('lets middleware catch errors', function() {
-			const mock = sinon.mock();
-			const spy = sinon.spy(function(event, contex, next) {
-				return next().catch(mock);
-			});
-			const stub = sinon.stub().throws();
+			const stub = sinon.stub();
+			const catcher = (event, contex, next) => {
+				return next().catch(stub);
+			};
+			const thrower = () => {
+				throw new Error();
+			};
 
-			const fixture = lambdaHandler().use(spy).use(stub);
+			const fixture = lambdaHandler().use(catcher).use(thrower);
 
 			return fixture(testEvent, testContext, noop)
 				.then(() => {
-					expect(spy.calledOnce).to.be.true;
-					expect(stub.calledOnce).to.be.true;
-					mock.verify();
+					expect(stub.called).to.be.true;
 				});
 		});
 
@@ -202,17 +204,16 @@ describe('lambda-handler-as-promised', function() {
 
 	it('middleware can provide a new context via next', function() {
 		const newTestContext = Object.assign({ extra: true }, testContext);
-		const spy = sinon.spy(function(event, context, next) {
+		const newContext = (event, context, next) => {
 			return next(null, newTestContext);
-		});
+		};
 		const mock = sinon.mock()
 			.withArgs(sinon.match.any, sinon.match(newTestContext));
 
-		const fixture = lambdaHandler().use(spy).use(mock);
+		const fixture = lambdaHandler().use(newContext).use(mock);
 
 		return fixture(testEvent, testContext, noop)
 			.then(() => {
-				expect(spy.calledOnce).to.be.true;
 				mock.verify();
 			});
 	});
