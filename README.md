@@ -1,4 +1,4 @@
-# lambda-handler-as-promised
+# alpha-lambda
 
 [![Build Status][ci-image]][ci-url]
 [![Coverage Status][coverage-image]][coverage-url]
@@ -6,12 +6,12 @@
 [![Dependencies Status][dependencies-image]][dependencies-url]
 [![DevDependencies Status][devdependencies-image]][devdependencies-url]
 
-Tiny wrapper that ensures that [AWS Lambda][aws-lambda-url] function's callback is always called. In other words, from your handler you can return value, promise, throw exception, and this library will wrap your code into a promise while calling appropriate lambda-required callback. Your handler is composed of middleware, similar to Express or Koa.
+Tiny wrapper that ensures that [AWS Lambda][aws-lambda-url] function's callback is always called. In other words, from your handler you can return value, promise, throw exception, and this library will wrap your code into a promise while calling appropriate lambda-required callback. Your handler is composed of middleware, similar to [Express][express-url] or [Koa][koa-url].
 
 ## Installation
 
 ```bash
-$ npm install lambda-handler-as-promised
+$ npm install alpha-lambda
 ```
 
 ## Usage
@@ -34,13 +34,13 @@ const handler = function(event, context, callback) {
 }
 ```
 
-With `lambda-handler-as-promised` you should not worry about top-level error handling, so you can write your handlers just like this:
+With `alpha-lambda` you should not worry about top-level error handling, so you can write your handlers just like this:
 
 ```js
-const lambdaHandler = require('lambda-handler-as-promised');
+const alphaLambda = require('alpha-lambda');
 
-module.exports.handler = lambdaHandler()
-	.use(function(evenet, context, next) {
+module.exports.handler = alphaLambda()
+	.use(function(event, context, next) {
 		console.log('this runs first');
 		doSomethingSync();
 		return next(); // next is a function, you must call it to proceed to next middleware
@@ -54,6 +54,44 @@ module.exports.handler = lambdaHandler()
 			});
 	});
 ```
+
+## Error Handling
+
+If you need custom error handling, you can do this by adding error handler as one of the first middleware, like:
+
+```js
+const alphaLambda = require('alpha-lambda');
+const co = require('co');
+
+module.exports.handler = alphaLambda()
+	.use(function(event, context, next) {
+		// Promise based error handler
+		return next()
+			.catch(err => {
+				// re throw, return Promise, etc.
+			});
+	})
+	.use(co.wrap(function* (event, context, next) {
+		// generator based error handler
+		try {
+			yield next();
+		} catch (err) {
+			// re throw, return Promise, etc.
+		}
+	})
+	.use(function(event) {
+		// normal workflow
+		return doSomething(event);
+	});
+```
+
+## Middleware
+
+Use these middleware to extend functionality.
+
+| Middleware | Author |
+|:-------|:------:|
+| **[Bunyan Logger](https://github.com/AntonBazhal/alpha-lambda-bunyan)** <br/> Bunyan logger middleware for alpha-lambda | [Anton Bazhal](https://github.com/AntonBazhal) |
 
 ## License
 
@@ -71,13 +109,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [aws-lambda-url]: https://aws.amazon.com/lambda/details/
 [bunyan-log-child-url]: https://www.npmjs.com/package/bunyan#logchild
 [bunyan-url]: https://www.npmjs.com/package/bunyan
-[ci-image]: https://circleci.com/gh/AntonBazhal/lambda-handler-as-promised.svg?style=shield&circle-token=fc9c3e6f415d2d338800c8a08d6155708ad260ce
-[ci-url]: https://circleci.com/gh/AntonBazhal/lambda-handler-as-promised
-[coverage-image]: https://coveralls.io/repos/github/AntonBazhal/lambda-handler-as-promised/badge.svg?branch=master
-[coverage-url]: https://coveralls.io/github/AntonBazhal/lambda-handler-as-promised?branch=master
-[dependencies-url]: https://david-dm.org/antonbazhal/lambda-handler-as-promised
-[dependencies-image]: https://david-dm.org/antonbazhal/lambda-handler-as-promised/status.svg
-[devdependencies-url]: https://david-dm.org/antonbazhal/lambda-handler-as-promised?type=dev
-[devdependencies-image]: https://david-dm.org/antonbazhal/lambda-handler-as-promised/dev-status.svg
-[npm-url]: https://www.npmjs.org/package/lambda-handler-as-promised
-[npm-image]: https://img.shields.io/npm/v/lambda-handler-as-promised.svg
+[ci-image]: https://circleci.com/gh/AntonBazhal/alpha-lambda.svg?style=shield&circle-token=fc9c3e6f415d2d338800c8a08d6155708ad260ce
+[ci-url]: https://circleci.com/gh/AntonBazhal/alpha-lambda
+[coverage-image]: https://coveralls.io/repos/github/AntonBazhal/alpha-lambda/badge.svg?branch=master
+[coverage-url]: https://coveralls.io/github/AntonBazhal/alpha-lambda?branch=master
+[dependencies-url]: https://david-dm.org/antonbazhal/alpha-lambda
+[dependencies-image]: https://david-dm.org/antonbazhal/alpha-lambda/status.svg
+[devdependencies-url]: https://david-dm.org/antonbazhal/alpha-lambda?type=dev
+[devdependencies-image]: https://david-dm.org/antonbazhal/alpha-lambda/dev-status.svg
+[express-url]: https://expressjs.com/
+[koa-url]: http://koajs.com/
+[npm-url]: https://www.npmjs.org/package/alpha-lambda
+[npm-image]: https://img.shields.io/npm/v/alpha-lambda.svg
