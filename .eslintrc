@@ -11,9 +11,6 @@ extends:
 parserOptions:
     sourceType: "scripts"
 
-ecmaFeatures:
-    generators: true
-
 rules:
     arrow-body-style: 0
     arrow-parens: [2, "as-needed"]
