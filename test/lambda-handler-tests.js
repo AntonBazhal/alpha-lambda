@@ -13,7 +13,7 @@ const testContext = {
 	functionVersion: '$LATEST'
 };
 
-describe('lambda-handler-as-promised', function() {
+describe('handler', function() {
 
 	it('should return a function', function() {
 		expect(lambdaHandler()).to.be.a('function');
