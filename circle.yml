@@ -12,5 +12,6 @@ deployment:
     branch: master
     owner: AntonBazhal
     commands:
+      - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> .npmrc
       - npm install -g publish
       - publish

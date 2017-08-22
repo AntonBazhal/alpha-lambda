@@ -91,7 +91,7 @@ Use these middleware to extend functionality.
 
 | Middleware | Author |
 |:-------|:------:|
-| **[Bunyan Logger](https://github.com/AntonBazhal/alpha-lambda-bunyan)** <br/> Bunyan logger middleware for alpha-lambda | [Anton Bazhal](https://github.com/AntonBazhal) |
+| **[Bunyan Logger][alpha-lambda-bunyan-url]** <br/> Bunyan logger middleware for alpha-lambda | [Anton Bazhal][anton-bazhal-url] |
 
 ## License
 
@@ -105,6 +105,7 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+[anton-bazhal-url]: https://github.com/AntonBazhal
 [aws-context-url]: http://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-context.html
 [aws-lambda-url]: https://aws.amazon.com/lambda/details/
 [bunyan-log-child-url]: https://www.npmjs.com/package/bunyan#logchild
@@ -119,5 +120,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [devdependencies-image]: https://david-dm.org/antonbazhal/alpha-lambda/dev-status.svg
 [express-url]: https://expressjs.com/
 [koa-url]: http://koajs.com/
+[alpha-lambda-bunyan-url]: https://www.npmjs.com/package/alpha-lambda-bunyan
 [npm-url]: https://www.npmjs.org/package/alpha-lambda
 [npm-image]: https://img.shields.io/npm/v/alpha-lambda.svg
