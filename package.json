@@ -1,6 +1,6 @@
 {
   "name": "alpha-lambda",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Tiny wrapper that ensures that AWS Lambda function's callback is always called",
   "repository": {
     "type": "git",
