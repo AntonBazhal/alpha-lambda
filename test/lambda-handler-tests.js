@@ -231,4 +231,20 @@ describe('handler', function() {
 			});
 	});
 
+	it('middleware provide a new event from next()', function() {
+		const spy = sinon.spy();
+
+		const fixture = lambdaHandler()
+			.use(function(event, context, next) {
+				return next(null, null, 'test');
+			})
+			.use(spy);
+
+		return fixture(testEvent, testContext, noop)
+			.then(() => {
+				expect(spy.calledOnce).to.be.true;
+				expect(spy.firstCall.args[0]).to.equal('test');
+			});
+	});
+
 });
