@@ -19,7 +19,8 @@
   "main": "lib/handler.js",
   "scripts": {
     "preinstall": "npm prune",
-    "lint": "eslint .",
+    "lint": "xo",
+    "lint:fix": "xo --fix",
     "test": "nyc --all mocha",
     "posttest": "npm run lint"
   },
@@ -37,15 +38,22 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "chai": "^4.1.1",
+    "chai": "^4.2.0",
     "env-test": "^1.0.0",
-    "eslint": "^4.4.1",
-    "eslint-config-airbnb-base": "^11.3.1",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-mocha": "^4.9.0",
-    "mocha": "^3.5.0",
-    "nyc": "^11.1.0",
-    "sinon": "^3.2.0"
+    "eslint": "^5.16.0",
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
+    "sinon": "^7.3.2",
+    "xo": "^0.24.0"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "xo": {
+    "envs": [
+      "node",
+      "mocha"
+    ],
+    "rules": {
+      "no-unused-expressions": 0
+    }
+  }
 }
